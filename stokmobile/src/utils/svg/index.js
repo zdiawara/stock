@@ -1,4 +1,4 @@
-import typeStructureIcon from './typeStructureIcon';
+import navigationIcon from './navigationIcon';
 import iconSvg from './icon';
 
-export {typeStructureIcon, iconSvg};
+export {navigationIcon, iconSvg};

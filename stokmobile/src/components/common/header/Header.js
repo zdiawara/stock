@@ -1,15 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import {Appbar} from 'react-native-paper';
 
-const Header = ({scene, previous, navigation}) => {
-  const {options} = scene.descriptor;
-
+const Header = ({title, children, goBack}) => {
   return (
     <Appbar.Header style={{backgroundColor: 'transparent'}}>
-      <Appbar.Content
-        style={{backgroundColor: 'transparent'}}
-        title={options.title || 'Title'}
-      />
+      {goBack && <Appbar.BackAction onPress={goBack} />}
+      <Appbar.Content style={{backgroundColor: 'transparent'}} title={title} />
+      {children}
     </Appbar.Header>
   );
 };

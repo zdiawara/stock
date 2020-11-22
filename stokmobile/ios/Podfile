@@ -8,6 +8,10 @@ target 'stokmobile' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'react-native-uuid-generator', :path => '../node_modules/react-native-uuid-generator'
+
+  pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
+
   target 'stokmobileTests' do
     inherit! :complete
     # Pods for testing

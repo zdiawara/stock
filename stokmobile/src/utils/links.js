@@ -12,6 +12,9 @@ const LINKS = {
   clients: {
     list: 'list_client',
   },
+  resources: {
+    list: 'list_resource',
+  },
 };
 
 export default LINKS;

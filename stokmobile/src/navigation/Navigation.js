@@ -2,7 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import LINKS from '../utils/links';
 import {EditProduct, ListProduct, ShowProduct} from '../components/products';
-import Home from '../components/Home';
+import Home from '../components/home';
 
 const Stack = createStackNavigator();
 
@@ -29,7 +29,11 @@ const Navigation = () => {
   return (
     <Stack.Navigator initialRouteName={LINKS.home}>
       {SCREENS.map((item) => (
-        <Stack.Screen {...item} key={item.name} />
+        <Stack.Screen
+          options={{header: () => null}}
+          {...item}
+          key={item.name}
+        />
       ))}
     </Stack.Navigator>
   );
