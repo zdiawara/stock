@@ -1,0 +1,20 @@
+#edit-product {
+  ion-item {
+    --min-height: 55px;
+  }
+  .account-label {
+    font-weight: 600;
+  }
+  .account-image {
+    background-color: #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  img {
+    max-width: 100px;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+  }
+}
