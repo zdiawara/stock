@@ -47,7 +47,7 @@ const SellsPage: React.FC = () => {
         </IonItem>
         <IonItem button detail lines="full">
           <IonLabel style={{ padding: "5px 0" }}>
-            <h3>Vente 1 : Fèfè, Piment</h3>
+            <h3>Vente 1</h3>
             <IonBadge style={{ marginTop: 10 }} color="light">
               2400 frs
             </IonBadge>

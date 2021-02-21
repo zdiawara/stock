@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback } from "react";
 
 import {
   IonToolbar,
@@ -17,26 +17,19 @@ import {
 } from "@ionic/react";
 import { RouteComponentProps } from "react-router";
 import { productStore } from "../../database";
-import { ProductModel } from "../../types";
 import { ProductItemModel } from "../../components/product";
-import {
-  addCircleOutline,
-  ellipsisVertical,
-  pencilSharp,
-  reloadOutline,
-} from "ionicons/icons";
+import { addCircleOutline, pencilOutline, reloadOutline } from "ionicons/icons";
 import { defaultImage } from "../../utils/images";
 import EditProduct from "./EditProduct";
 import Modal from "../../components/Modal";
 import { useModal } from "../../hooks";
-import productModelStore from "../../database/productModelStore";
 import { addNumber } from "../../utils/functions";
 import { selectProduct, setProduct } from "../../redux/reducers/products";
 import { useDispatch, useSelector } from "react-redux";
 
 const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
   const product = useSelector(selectProduct);
-  const [productModel, setProductModel] = useState<ProductModel | undefined>();
+  const stockModal = useModal();
   const editModal = useModal();
   const actionModal = useModal();
   const dispatch = useDispatch();
@@ -44,7 +37,7 @@ const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
   const loadProduct = useCallback(() => {
     const { id } = match.params as { [key: string]: string };
     productStore
-      .findWithModels(id)
+      .findOne(id)
       .then((data) => dispatch(setProduct(data)))
       .catch((e) => {
         console.log(e);
@@ -56,26 +49,17 @@ const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
   }, [loadProduct]);
 
   const increaseStock = (body: any) => {
-    if (!productModel) {
+    if (!product) {
       return;
     }
     const stock = body.stock as number;
     if (stock <= 0) {
       return alert("Mettre une valeur positive");
     }
-    productModelStore
-      .save({ ...productModel, stock: addNumber(productModel.stock, stock) })
-      .then(() => {
-        loadProduct();
-      });
+    productStore
+      .save({ ...product, stock: addNumber(product.stock, stock) })
+      .then(loadProduct);
   };
-
-  const stockTotal = useMemo(() => {
-    return product?.productModels.reduce(
-      (acc, prev) => (parseInt(`${prev.stock}`) + acc) as number,
-      0
-    );
-  }, [product]);
 
   return (
     <IonPage id="product-page">
@@ -85,14 +69,11 @@ const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
             <IonBackButton />
           </IonButtons>
           <IonTitle>{product?.name}</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={editModal.openModal}>
-              <IonIcon slot="icon-only" icon={pencilSharp} />
-            </IonButton>
+          {/* <IonButtons slot="end">
             <IonButton onClick={actionModal.openModal}>
               <IonIcon slot="icon-only" icon={ellipsisVertical} />
             </IonButton>
-          </IonButtons>
+          </IonButtons> */}
         </IonToolbar>
       </IonHeader>
 
@@ -101,18 +82,33 @@ const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
           <img src={defaultImage} alt="avatar" />
         </div>
         <IonList>
-          {product?.productModels.map((item, i) => (
-            <ProductItemModel
-              key={item._id || i}
-              label={item.name}
-              badge={`${item.stock} articles`}
-              right={() => (
-                <IonButton onClick={() => setProductModel(item)}>
-                  <IonIcon slot="icon-only" icon={addCircleOutline} />
-                </IonButton>
-              )}
-            />
-          ))}
+          <ProductItemModel
+            label="Nom de l'article"
+            badge={product?.name || ""}
+            right={
+              <IonButton onClick={stockModal.openModal}>
+                <IonIcon slot="icon-only" icon={pencilOutline} />
+              </IonButton>
+            }
+          />
+          <ProductItemModel
+            label="Prix de vente"
+            badge={`${product?.price || "0"} frs`}
+            right={
+              <IonButton onClick={stockModal.openModal}>
+                <IonIcon slot="icon-only" icon={pencilOutline} />
+              </IonButton>
+            }
+          />
+          <ProductItemModel
+            label="Quantité en stock"
+            badge={`${product?.stock || 0} articles`}
+            right={
+              <IonButton onClick={stockModal.openModal}>
+                <IonIcon slot="icon-only" icon={addCircleOutline} />
+              </IonButton>
+            }
+          />
         </IonList>
 
         {product?._id ? (
@@ -122,8 +118,8 @@ const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
         ) : null}
 
         <IonAlert
-          isOpen={!!productModel}
-          onDidDismiss={() => setProductModel(undefined)}
+          isOpen={stockModal.show}
+          onDidDismiss={stockModal.closeModal}
           header="Augmenter la quantité"
           inputs={[
             {
@@ -156,13 +152,8 @@ const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
           isOpen={actionModal.show}
           onDidDismiss={actionModal.closeModal}
           // cssClass='my-custom-class'
-          header={`${stockTotal} articles en stock`}
+          header={`${product?.stock || 0} articles en stock`}
           buttons={[
-            {
-              text: "Modifier le produit",
-              icon: pencilSharp,
-              handler: editModal.openModal,
-            },
             {
               text: "Ajouter une production",
               icon: addCircleOutline,

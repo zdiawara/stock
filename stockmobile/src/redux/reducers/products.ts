@@ -1,10 +1,10 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IProductItem, ProductState } from "../../types";
+import { IProductItem, Product } from "../../types";
 import { toProductItem } from "../../utils/builder";
 
 type State = {
   products: IProductItem[];
-  product?: ProductState;
+  product?: Product;
 };
 
 let initialState = {
@@ -16,10 +16,10 @@ const productState = createSlice({
   name: "products",
   initialState,
   reducers: {
-    addProduct: (state, action: PayloadAction<ProductState>) => {
+    addProduct: (state, action: PayloadAction<Product>) => {
       state.products.push(toProductItem(action.payload));
     },
-    setProduct: (state, action: PayloadAction<ProductState>) => {
+    setProduct: (state, action: PayloadAction<Product>) => {
       state.product = action.payload;
       const index = state.products.findIndex(
         (item) => item._id === action.payload._id
@@ -28,7 +28,7 @@ const productState = createSlice({
         state.products[index] = toProductItem(action.payload);
       }
     },
-    setProducts: (state, action: PayloadAction<ProductState[]>) => {
+    setProducts: (state, action: PayloadAction<Product[]>) => {
       state.products = action.payload.map(toProductItem);
     },
   },

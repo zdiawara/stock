@@ -20,7 +20,7 @@ import { ProductItemModel } from "../../components/product";
 import { productStore } from "../../database";
 import productModelStore from "../../database/productModelStore";
 import { addProduct, setProduct } from "../../redux/reducers/products";
-import { ProductState, ProductModel } from "../../types";
+import { ProductState, ProductModel, Product } from "../../types";
 import { defaultImage } from "../../utils/images";
 
 import "./EditProduct.scss";
@@ -36,9 +36,10 @@ interface ElementState {
 }
 
 const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
-  const [productState, setProductState] = useState<ProductState>({
+  const [productState, setProductState] = useState<Product>({
     name: "",
-    productModels: [],
+    price: 0,
+    stock: 0,
   });
   const [current, setCurrent] = useState<ElementState>({});
   const [toDelete, setToDelete] = useState<number | undefined>();
@@ -62,93 +63,19 @@ const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
   };
 
   const canSaved = useMemo(() => {
-    return (
-      productState.name &&
-      productState.name.trim() !== "" &&
-      productState.productModels.length > 0
-    );
+    return productState.name && productState.name.trim() !== "";
   }, [productState]);
 
-  const onAddProduct = () => {
-    setCurrent({
-      productModel: { name: "", price: 0, product: "", stock: 0 },
-      index: undefined,
-    });
-  };
-
   const saveProduct = async () => {
-    const { productModels, ...rest } = productState;
-    const newProduct = await productStore.save(rest);
-    const ids = productModels
-      .filter((item) => (item._id ? true : false))
-      .map((e) => e._id);
+    const newProduct = await productStore.save(productState);
 
-    await productModelStore
-      .getDB()
-      .remove({ _id: { $nin: ids }, product: newProduct._id }, { multi: true });
-
-    const newModels = await productModelStore.saveAll(
-      productModels.map((item) => ({ ...item, product: newProduct._id || "" }))
-    );
-
-    const data: ProductState = {
-      ...newProduct,
-      productModels: newModels,
-    };
     if (productState._id) {
-      dispatch(setProduct(data));
+      dispatch(setProduct(newProduct));
     } else {
-      dispatch(addProduct(data));
+      dispatch(addProduct(newProduct));
     }
     closeModal();
   };
-
-  const removeProductModel = () => {
-    if (toDelete === undefined) {
-      return;
-    }
-    setProductState((prev) => {
-      return {
-        ...prev,
-        productModels: [
-          ...prev.productModels.slice(0, toDelete),
-          ...prev.productModels.slice(toDelete + 1),
-        ],
-      };
-    });
-  };
-
-  const saveProductModel = (data: any) => {
-    if (!current.productModel) {
-      return;
-    }
-
-    setProductState((prev) => {
-      const newProductModel = {
-        ...current.productModel,
-        name: data.name,
-        price: data.price as number,
-      } as ProductModel;
-
-      let productModels = [];
-      if (current.index === undefined) {
-        productModels = [...prev.productModels, newProductModel];
-      } else {
-        const { index } = current;
-        productModels = [
-          ...prev.productModels.slice(0, index),
-          newProductModel,
-          ...prev.productModels.slice(index + 1),
-        ];
-      }
-
-      return { ...prev, productModels };
-    });
-
-    setCurrent({});
-  };
-
-  const { productModel, index } = current;
 
   return (
     <>
@@ -185,107 +112,15 @@ const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
               onIonInput={onChange}
             />
           </TextField>
-          {productState.productModels.map((item, i) => (
-            <ProductItemModel
-              key={i}
-              badge={`${item.price} frs`}
-              label={item.name}
-              right={() => (
-                <>
-                  <IonButton
-                    size="small"
-                    onClick={() =>
-                      setCurrent({
-                        productModel: item,
-                        index: i,
-                      })
-                    }
-                  >
-                    <IonIcon slot="icon-only" icon={pencilSharp} />
-                  </IonButton>
-                  <IonButton size="small" onClick={() => setToDelete(i)}>
-                    <IonIcon slot="icon-only" icon={trashSharp} />
-                  </IonButton>
-                </>
-              )}
+          <TextField error={""} label="Prix">
+            <IonInput
+              placeholder="Prix de vente unitaire"
+              name="price"
+              value={productState.price || ""}
+              onIonInput={onChange}
             />
-          ))}
-          <IonItem
-            onClick={onAddProduct}
-            lines="full"
-            className="ion-text-center"
-            button
-          >
-            <IonLabel>Ajouter un modèle</IonLabel>
-          </IonItem>
+          </TextField>
         </IonList>
-        {/* <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonButton
-            style={{ textTransform: "none" }}
-            shape="round"
-            onClick={onAddProduct}
-          >
-            <IonIcon slot="start" icon={addCircleSharp} />
-            Enregistrer
-          </IonButton>
-        </IonFab> */}
-        <IonAlert
-          isOpen={toDelete !== undefined}
-          header="Supprimer ce modèle ?"
-          onDidDismiss={() => setToDelete(undefined)}
-          buttons={[
-            {
-              text: "Annuler",
-              role: "cancel",
-              cssClass: "secondary",
-
-              handler: () => {
-                console.log("Confirm Cancel");
-              },
-            },
-            {
-              text: "Oui",
-              handler: removeProductModel,
-            },
-          ]}
-        />
-        <IonAlert
-          isOpen={!!productModel}
-          onDidDismiss={() => setCurrent({})}
-          header={index !== undefined ? "Modification" : "Ajout"}
-          inputs={[
-            {
-              name: "name",
-              type: "text",
-              label: "Nom du modèle",
-              placeholder: "Nom du modèle",
-              value: productModel?.name,
-            },
-            {
-              name: "price",
-              type: "number",
-              min: 0,
-              label: "Prix de vente",
-              placeholder: "Prix de vente",
-              value: productModel?.price || "",
-            },
-          ]}
-          buttons={[
-            {
-              text: "Annuler",
-              role: "cancel",
-              cssClass: "secondary",
-
-              handler: () => {
-                console.log("Confirm Cancel");
-              },
-            },
-            {
-              text: "Valider",
-              handler: saveProductModel,
-            },
-          ]}
-        />
       </IonContent>
     </>
   );

@@ -1,0 +1,6 @@
+
+keytool -genkeypair -v -keystore stockmobile.keystore -alias stockmobile -keyalg RSA -keysize 2048 -validity 10000
+pwd : URajjsweop@s120
+
+Key Alias : stockmobile
+Kye pwd : URajjsweop@s120

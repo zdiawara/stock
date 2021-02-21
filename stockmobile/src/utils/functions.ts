@@ -1,7 +1,7 @@
 import { ProductModel } from "../types";
 
 export const addNumber = (a: number, b: number) => {
-  return parseInt(a.toString()) + parseInt(b.toString());
+  return parseInt((a || "0").toString()) + parseInt((b || "0").toString());
 };
 
 export const computeTotalStock = (products: ProductModel[]) => {

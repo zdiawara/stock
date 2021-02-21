@@ -6,6 +6,8 @@ export type Model = {
 
 export interface Product extends Model {
   name: string;
+  price: number;
+  stock: number;
 }
 
 export interface ProductModel extends Model {

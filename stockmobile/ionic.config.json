@@ -1,5 +1,7 @@
 {
   "name": "stockmobile",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "react"
 }

@@ -5,7 +5,7 @@ import { IonItem, IonLabel, IonBadge, IonButtons } from "@ionic/react";
 type ProductItem = {
   label: string;
   badge: string;
-  right?: Function;
+  right?: React.ReactNode;
 };
 const ProductItemModel: React.FC<ProductItem> = ({ label, badge, right }) => {
   return (
@@ -16,7 +16,7 @@ const ProductItemModel: React.FC<ProductItem> = ({ label, badge, right }) => {
           {badge}
         </IonBadge>
       </IonLabel>
-      {right ? <IonButtons slot="end">{right()}</IonButtons> : null}
+      {right ? <IonButtons slot="end">{right}</IonButtons> : null}
     </IonItem>
   );
 };

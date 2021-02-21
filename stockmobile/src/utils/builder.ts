@@ -1,10 +1,9 @@
-import { IProductItem, ProductState } from "../types";
-import { computeTotalStock } from "./functions";
+import { IProductItem, Product } from "../types";
 
-export const toProductItem = (product: ProductState): IProductItem => {
+export const toProductItem = (product: Product): IProductItem => {
   return {
     _id: product._id || "",
     name: product.name,
-    stockTotal: computeTotalStock(product.productModels),
+    stockTotal: product.stock,
   };
 };
