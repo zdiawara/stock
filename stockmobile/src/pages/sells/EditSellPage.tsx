@@ -1,4 +1,4 @@
-import React, { FC, TableHTMLAttributes, useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 
 import {
   IonToolbar,
@@ -9,62 +9,81 @@ import {
   IonHeader,
   IonItem,
   IonLabel,
-  IonBadge,
-  IonListHeader,
   IonBackButton,
-  IonNote,
-  IonGrid,
-  IonCol,
-  IonRow,
   IonButton,
   IonIcon,
 } from "@ionic/react";
 import { useModal } from "../../hooks";
-import ProductSell from "./ProductSell";
 import Modal from "../../components/Modal";
 
 import "./Table.scss";
 import { addCircle } from "ionicons/icons";
+import { ListProductSell, ProductSellForm } from "../../components/sell";
+import { IProductSellState } from "../../types";
+import sellStore from "../../database/sellStore";
+import productSellStore from "../../database/productSellStore";
+import { useDispatch } from "react-redux";
+import { addSell } from "../../redux/reducers/sells";
+import { sumNumbers } from "../../utils/functions";
+import { useHistory } from "react-router";
 
-type ItemProps = {
-  label: string;
-  value: string | number;
+type ISellItem = {
+  client?: string;
+  products: IProductSellState[];
 };
-const Item: FC<ItemProps> = ({ label, value }) => {
-  return (
-    <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-      <IonBadge style={{ marginRight: 5 }} color="light">
-        {label}
-      </IonBadge>
-      <IonNote>{value}</IonNote>
-    </div>
-  );
-};
+
 const EditSellPage: React.FC = () => {
   const editSellModal = useModal();
-  const ref = useRef<HTMLTableElement>(null);
-  useEffect(() => {
-    if (!ref.current) {
+  const dispatch = useDispatch();
+  const navigation = useHistory();
+  const [sell, setSell] = useState<ISellItem>({
+    client: undefined,
+    products: [],
+  });
+
+  const addProduct = (data: IProductSellState) => {
+    setSell((prev) => {
+      return {
+        ...prev,
+        products: [
+          ...prev.products,
+          {
+            ...data,
+            discount: data.discount as number,
+            total: data.total as number,
+            quantity: data.quantity as number,
+          },
+        ],
+      };
+    });
+  };
+
+  const saveSell = async () => {
+    const saved = await sellStore.save({
+      client: "",
+    });
+    if (!saved._id) {
       return;
     }
+    productSellStore.saveAll(
+      sell.products.map((item) => ({
+        discount: item.discount,
+        total: item.total,
+        quantity: item.quantity,
+        product: item.product?._id || "",
+        sell: saved._id || "",
+      }))
+    );
 
-    var table = ref.current.cloneNode(true);
+    dispatch(
+      addSell({
+        _id: saved._id,
+        total: sumNumbers(sell.products.map((e) => e.price || 0)),
+      })
+    );
+    navigation.goBack();
+  };
 
-    (table as HTMLElement).classList.add("clone");
-    document.querySelector("#table-scroll")?.append(table);
-
-    // var fixedColumn = table
-    //   .cloneNode()
-    //   .insertBefore()
-    //   .insertBefore($table)
-    //   .addClass("fixed-column");
-
-    // $fixedColumn.find("th:not(:first-child),td:not(:first-child)").remove();
-
-    // $fixedColumn.find("tr").each(function (i, elem) {
-    //   $(this).height($table.find("tr:eq(" + i + ")").height());
-    // });
-  }, []);
   return (
     <IonPage id="edit-sell">
       <IonHeader translucent={true}>
@@ -73,120 +92,32 @@ const EditSellPage: React.FC = () => {
             <IonBackButton />
           </IonButtons>
           <IonTitle>Nouvelle vente</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={saveSell}>Enregistrer</IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen={true}>
-        {/* {/* <IonListHeader>Client</IoµnListHeader> */}
-        <IonItem detail lines="full">
+        <IonItem detail button lines="full">
           <IonLabel>
             <h3>Client</h3>
-            Traoré moussa
           </IonLabel>
-
-          {/* <IonButtons slot="end">
-            <IonButton>
-              <IonIcon slot="icon-only" icon={addCircle} />
-            </IonButton>
-          </IonButtons> */}
         </IonItem>
-
-        {/* <IonListHeader>Produits vendus</IonListHeader> */}
-
         <IonItem lines="none">
           <IonLabel>Articles achetés</IonLabel>
           <IonButtons slot="end">
-            <IonButton>
+            <IonButton onClick={editSellModal.openModal}>
               <IonIcon slot="icon-only" icon={addCircle} />
             </IonButton>
           </IonButtons>
         </IonItem>
-
-        <div id="table-scroll" className="table-scroll">
-          <div className="table-wrap">
-            <table ref={ref} className="main-table">
-              <thead>
-                <tr>
-                  <th
-                    className="fixed-side"
-                    style={{ fontWeight: "bold" }}
-                    scope="col"
-                  >
-                    Nom produit
-                  </th>
-                  <th scope="col">Quantité</th>
-                  <th scope="col">Remise</th>
-                  <th scope="col">Prix total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th
-                    style={{
-                      maxWidth: "300px",
-
-                      // display: "flex",
-                      // flexWrap: "wrap",
-                    }}
-                    className="fixed-side ion-text-wrap"
-                  >
-                    Curry en boite rouge vert
-                  </th>
-                  <td>3</td>
-                  <td>0</td>
-                  <td>2 500 frs</td>
-                </tr>
-                <tr>
-                  <th className="fixed-side">Piment rouge</th>
-                  <td>3</td>
-                  <td>0</td>
-                  <td>2 500 frs</td>
-                </tr>
-              </tbody>
-              {/* <tfoot>
-                <tr>
-                  <th className="fixed-side">&nbsp;</th>
-                  <td>Footer 2</td>
-                  <td>Footer 3</td>
-                  <td>Footer 4</td>
-                </tr>
-              </tfoot> */}
-            </table>
-          </div>
-        </div>
-
-        {/* <IonItem lines="none" detail>
-          <IonLabel>
-            <h3>Curry en poudre blanche</h3>
-            <IonGrid>
-              <IonRow>
-                <IonCol size="4">
-                  <Item label="Quantite" value="2" />
-                </IonCol>
-                <IonCol size="4">
-                  <Item label="Pv" value="2 500 frs" />
-                </IonCol>
-                <IonCol size="4">
-                  <Item label="Rap" value="500 frs" />
-                </IonCol>
-              </IonRow>
-            </IonGrid>
-          </IonLabel>
-        </IonItem> */}
-
-        {/* <IonItem
-          button
-          color="light"
-          lines="none"
-          onClick={editSellModal.openModal}
-        >
-          Ajouter un produit
-        </IonItem> */}
+        <ListProductSell products={sell.products} />
       </IonContent>
 
       <Modal {...editSellModal}>
-        <ProductSell
-          onUpdated={() => {}}
+        <ProductSellForm
+          onSaved={addProduct}
           closeModal={editSellModal.closeModal}
         />
       </Modal>

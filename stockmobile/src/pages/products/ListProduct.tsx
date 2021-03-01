@@ -22,9 +22,7 @@ import EditProduct from "./EditProduct";
 import Modal from "../../components/Modal";
 import { useModal } from "../../hooks";
 import { productStore } from "../../database";
-import productModelStore from "../../database/productModelStore";
 import { defaultImage } from "../../utils/images";
-import { ProductState } from "../../types";
 import { selectProducts, setProducts } from "../../redux/reducers/products";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -34,25 +32,11 @@ const ListProduct: React.FC = () => {
   const products = useSelector(selectProducts);
   const dispatch = useDispatch();
 
-  const loadProducts = useCallback(async () => {
-    const allProducts = await productStore.findAll();
-
-    const data = await Promise.all(
-      allProducts.map(
-        async (product): Promise<ProductState> => ({
-          ...product,
-          productModels: await productModelStore.findAll({
-            product: product._id,
-          }),
-        })
-      )
-    );
-    dispatch(setProducts(data));
-  }, [dispatch]);
-
   useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
+    productStore.findAll().then((data) => {
+      dispatch(setProducts(data));
+    });
+  }, [dispatch]);
 
   return (
     <IonPage id="product-page">
@@ -65,12 +49,12 @@ const ListProduct: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen={true}>
+      <IonContent>
         <IonList>
           {products.map((product, i) => (
             <IonItem
               routerLink={`/tabs/products/${product._id}`}
-              button
+              // button
               lines="full"
               detail
               key={i}

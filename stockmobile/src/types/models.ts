@@ -22,10 +22,9 @@ export interface SellModel extends Model {
 }
 
 export interface ProductSellModel extends Model {
-  quantity: number;
-  discount: number;
-  price: number;
-  rest: number;
-  productModel: string;
+  product: string;
   sell: string;
+  quantity: number;
+  total: number;
+  discount: number;
 }

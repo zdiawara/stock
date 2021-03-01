@@ -1,5 +1,11 @@
 import React from "react";
-import { IonRouterOutlet } from "@ionic/react";
+import {
+  IonLabel,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
+} from "@ionic/react";
 import { Route, Redirect } from "react-router";
 import ListProduct from "./products/ListProduct";
 import ResourcePage from "./ResourcePage";
@@ -7,14 +13,15 @@ import SellPage from "./sells/SellsPage";
 import ClientPage from "./clients/ClientsPage";
 import DetailProduct from "./products/DetailProduct";
 import EditSellPage from "./sells/EditSellPage";
+import HomePage from "./HomePage";
 
 interface MainTabsProps {}
 
 const MainTabs: React.FC<MainTabsProps> = () => {
   return (
-    <>
+    <IonTabs>
       <IonRouterOutlet>
-        <Redirect exact path="/tabs" to="/tabs/products" />
+        <Redirect exact path="/tabs" to="/tabs/home" />
         {/*
           Using the render method prop cuts down the number of renders your components will have due to route changes.
           Use the component prop when your component depends on the RouterComponentProps passed in automatically.
@@ -39,37 +46,28 @@ const MainTabs: React.FC<MainTabsProps> = () => {
           render={() => <ClientPage />}
           exact={true}
         />
-
-        {/* <Route
-          path="/tabs/products/:id"
-          component={SpeakerDetail}
-          exact={true}
-        />
-        <Route
-          path="/tabs/products/:id/productions"
-          component={SpeakerDetail}
-          exact={true}
-        /> */}
+        <Route path="/tabs/home" component={HomePage} exact={true} />
       </IonRouterOutlet>
-      {/* <IonTabBar slot="bottom">
+      <IonTabBar slot="bottom">
+        <IonTabButton tab="map" href="/tabs/home">
+          {/* <IonIcon icon={personCircle} /> */}
+          <IonLabel> Home</IonLabel>
+        </IonTabButton>
         <IonTabButton tab="products" href="/tabs/products">
-          <IonIcon icon={calendar} />
+          {/* <IonIcon icon={calendar} /> */}
           <IonLabel>Produits</IonLabel>
         </IonTabButton>
         <IonTabButton tab="sells" href="/tabs/sells">
-          <IonIcon icon={people} />
+          {/* <IonIcon icon={people} /> */}
           <IonLabel>Ventes</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="map" href="/tabs/resources">
-          <IonIcon icon={location} />
-          <IonLabel> Resources</IonLabel>
-        </IonTabButton>
+
         <IonTabButton tab="about" href="/tabs/clients">
-          <IonIcon icon={informationCircle} />
+          {/* <IonIcon icon={informationCircle} /> */}
           <IonLabel>Clients</IonLabel>
         </IonTabButton>
-      </IonTabBar> */}
-    </>
+      </IonTabBar>
+    </IonTabs>
   );
 };
 

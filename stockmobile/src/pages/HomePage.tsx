@@ -19,7 +19,7 @@ const Home: React.FC = () => {
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Blank</IonTitle>
+          <IonTitle>Acceuil</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -28,7 +28,6 @@ const Home: React.FC = () => {
             <IonTitle size="large">Blank</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer />
       </IonContent>
     </IonPage>
   );

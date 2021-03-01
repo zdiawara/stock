@@ -1,26 +1,21 @@
 import {
-  IonAlert,
   IonButton,
   IonButtons,
   IonContent,
   IonHeader,
   IonIcon,
   IonInput,
-  IonItem,
-  IonLabel,
   IonList,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { closeSharp, pencilSharp, trashSharp } from "ionicons/icons";
+import { closeSharp } from "ionicons/icons";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { TextField } from "../../components/form";
-import { ProductItemModel } from "../../components/product";
 import { productStore } from "../../database";
-import productModelStore from "../../database/productModelStore";
 import { addProduct, setProduct } from "../../redux/reducers/products";
-import { ProductState, ProductModel, Product } from "../../types";
+import { Product } from "../../types";
 import { defaultImage } from "../../utils/images";
 
 import "./EditProduct.scss";
@@ -30,19 +25,14 @@ type EditProductProps = {
   closeModal: () => void;
 };
 
-interface ElementState {
-  productModel?: ProductModel;
-  index?: number;
-}
-
 const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
   const [productState, setProductState] = useState<Product>({
     name: "",
     price: 0,
     stock: 0,
   });
-  const [current, setCurrent] = useState<ElementState>({});
-  const [toDelete, setToDelete] = useState<number | undefined>();
+  // const [current, setCurrent] = useState<ElementState>({});
+  // const [toDelete, setToDelete] = useState<number | undefined>();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -116,6 +106,7 @@ const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
             <IonInput
               placeholder="Prix de vente unitaire"
               name="price"
+              type="number"
               value={productState.price || ""}
               onIonInput={onChange}
             />
