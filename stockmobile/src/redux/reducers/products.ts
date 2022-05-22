@@ -1,9 +1,8 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IProductItem, Product } from "../../types";
-import { toProductItem } from "../../utils/builder";
+import { Product } from "../../types";
 
 type State = {
-  products: IProductItem[];
+  products: Product[];
   product?: Product;
 };
 
@@ -17,7 +16,7 @@ const productState = createSlice({
   initialState,
   reducers: {
     addProduct: (state, action: PayloadAction<Product>) => {
-      state.products.push(toProductItem(action.payload));
+      state.products.push(action.payload);
     },
     setProduct: (state, action: PayloadAction<Product>) => {
       state.product = action.payload;
@@ -25,11 +24,11 @@ const productState = createSlice({
         (item) => item._id === action.payload._id
       );
       if (index >= 0) {
-        state.products[index] = toProductItem(action.payload);
+        state.products[index] = action.payload;
       }
     },
     setProducts: (state, action: PayloadAction<Product[]>) => {
-      state.products = action.payload.map(toProductItem);
+      state.products = action.payload;
     },
   },
 });

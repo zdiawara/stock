@@ -23,27 +23,68 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/test.css";
-import Menu from "./components/Menu";
-import MainTabs from "./pages/MainTabs";
+
 import store from "./redux";
+import { LINKS } from "./utils/links";
+import { EditProduct, ListProduct } from "./pages/products";
+import Menu from "./components/Menu";
+import { Home } from "./pages/home";
+import { CreateMouvement, ListMouvement } from "./pages/mouvements";
 
-const Nav = () => {
-  return (
-    <IonSplitPane contentId="main">
-      <Menu menuEnabled={true} />
-      <IonRouterOutlet id="main">
-        <Route path="/tabs" render={MainTabs} />
-      </IonRouterOutlet>
-
-      <Route exact path="/" render={() => <Redirect to="/tabs" />} />
-    </IonSplitPane>
-  );
-};
 const App: React.FC = () => (
   <Provider store={store}>
     <IonApp>
       <IonReactRouter>
-        <Nav />
+        <IonSplitPane contentId="main">
+          <Menu menuEnabled={true} />
+          <IonRouterOutlet id="main">
+            <IonRouterOutlet>
+              <Redirect exact path="/tabs" to="/tabs/home" />
+              <Route
+                path={LINKS.products.list}
+                component={ListProduct}
+                exact={true}
+              />
+              <Route
+                path={LINKS.products.edit(":productId")}
+                component={EditProduct}
+                exact={true}
+              />
+              <Route
+                path={LINKS.mouvements.list}
+                component={ListMouvement}
+                exact={true}
+              />
+              <Route
+                path={LINKS.mouvements.create(":typeMouvement")}
+                component={CreateMouvement}
+                exact={true}
+              />
+
+              {/* <Route
+          path="/tabs/resources"
+          render={() => <ResourcePage />}
+          exact={true}
+        />
+
+        <Route path="/tabs/sells" component={SellPage} exact={true} />
+        <Route path="/tabs/sells/edit" component={EditSellPage} exact={true} />
+
+        <Route
+          path="/tabs/clients"
+          render={() => <ClientPage />}
+          exact={true}
+        /> */}
+              <Route path={LINKS.home.base} component={Home} exact={true} />
+            </IonRouterOutlet>
+          </IonRouterOutlet>
+
+          <Route
+            exact
+            path="/"
+            render={() => <Redirect to={LINKS.home.base} />}
+          />
+        </IonSplitPane>
       </IonReactRouter>
     </IonApp>
   </Provider>

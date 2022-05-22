@@ -11,20 +11,15 @@ import {
   IonMenu,
   IonMenuToggle,
 } from "@ionic/react";
-import { hammer, helpCircle } from "ionicons/icons";
+
+import { MENU } from "../utils/menu";
 
 import "./Menu.css";
 
 const routes = {
-  appPages: [
-    { title: "Produits", path: "/tabs/products" },
-    { title: "Ventes", path: "/tabs/sells" },
-    { title: "Clients", path: "/tabs/clients" },
-  ],
-  loggedInPages: [
-    { title: "Support", path: "/support", icon: helpCircle },
-    { title: "Tutoriel", path: "/logout", icon: hammer },
-  ],
+  menu: [MENU.home],
+  appPages: [MENU.products, MENU.mouvements, MENU.depenses, MENU.rapports],
+  loggedInPages: [MENU.support, MENU.tutoriel],
 };
 
 interface Pages {
@@ -45,21 +40,30 @@ const Menu: React.FC<MenuProps> = ({ menuEnabled }) => {
   function renderlistItems(list: Pages[]) {
     return list
       .filter((route) => !!route.path)
-      .map((p) => (
-        <IonMenuToggle key={p.title} auto-hide="false">
-          <IonItem
-            detail={false}
-            routerLink={p.path}
-            routerDirection="none"
-            className={
-              location.pathname.startsWith(p.path) ? "selected" : undefined
-            }
-          >
-            {p.icon && <IonIcon slot="start" icon={p.icon} />}
-            <IonLabel>{p.title}</IonLabel>
-          </IonItem>
-        </IonMenuToggle>
-      ));
+      .map((p) => {
+        const isSelected = location.pathname.startsWith(p.path);
+        return (
+          <IonMenuToggle key={p.title} auto-hide="false">
+            <IonItem
+              detail={false}
+              routerLink={p.path}
+              routerDirection="none"
+              className={isSelected ? "selected" : undefined}
+            >
+              {p.icon && (
+                <IonIcon
+                  color={isSelected ? "primary" : "dark"}
+                  slot="start"
+                  icon={p.icon}
+                />
+              )}
+              <IonLabel color={isSelected ? "primary" : "dark"}>
+                {p.title}
+              </IonLabel>
+            </IonItem>
+          </IonMenuToggle>
+        );
+      });
   }
 
   return (
@@ -67,6 +71,10 @@ const Menu: React.FC<MenuProps> = ({ menuEnabled }) => {
       <IonContent forceOverscroll={false}>
         <IonList lines="none">
           <IonListHeader>Menu</IonListHeader>
+          {renderlistItems(routes.menu)}
+        </IonList>
+        <IonList lines="none">
+          <IonListHeader>Actions</IonListHeader>
           {renderlistItems(routes.appPages)}
         </IonList>
         <IonList lines="none">

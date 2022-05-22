@@ -49,7 +49,7 @@ const ListProductSell: React.FC<ListProductSellProps> = ({ products }) => {
                 </th>
                 <td>{item.quantity}</td>
                 <td>{item.discount}</td>
-                <td>{item.total} frs</td>
+                <td>{item.total}</td>
               </tr>
             ))}
           </tbody>

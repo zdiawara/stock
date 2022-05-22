@@ -27,7 +27,7 @@ const ProductPicker: React.FC<ProductPickerProps> = ({ onSelect }) => {
   };
 
   return (
-    <IonSelect onIonChange={_onSelect} placeholder="Selectionner un produit">
+    <IonSelect onIonChange={_onSelect}>
       {products.map(({ _id, name }) => (
         <IonSelectOption key={_id} value={_id}>
           {name}

@@ -1,0 +1,23 @@
+.menu-item {
+  height: 100;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--ion-color-primary);
+  border-radius: 5px;
+
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  .menu-item-media {
+    width: 40px;
+    height: 40px;
+  }
+
+  .menu-item-label {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+}

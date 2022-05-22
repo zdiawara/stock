@@ -8,25 +8,21 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React from "react";
-import "./Home.css";
+import ListMenu from "./ListMenu";
 
 const Home: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar color="primary">
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Acceuil</IonTitle>
+          <IonTitle>G Stock</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <ListMenu />
       </IonContent>
     </IonPage>
   );

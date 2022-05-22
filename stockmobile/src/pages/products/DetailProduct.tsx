@@ -20,8 +20,6 @@ import { productStore } from "../../database";
 import { ProductItemModel } from "../../components/product";
 import { addCircleOutline, pencilOutline, reloadOutline } from "ionicons/icons";
 import { defaultImage } from "../../utils/images";
-import EditProduct from "./EditProduct";
-import Modal from "../../components/Modal";
 import { useModal } from "../../hooks";
 import { addNumber } from "../../utils/functions";
 import { selectProduct, setProduct } from "../../redux/reducers/products";
@@ -30,7 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
   const product = useSelector(selectProduct);
   const stockModal = useModal();
-  const editModal = useModal();
   const actionModal = useModal();
   const dispatch = useDispatch();
 
@@ -111,11 +108,11 @@ const DetailProduct: React.FC<RouteComponentProps> = ({ match }) => {
           />
         </IonList>
 
-        {product?._id ? (
+        {/* {product?._id ? (
           <Modal {...editModal}>
             <EditProduct id={product?._id} closeModal={editModal.closeModal} />
           </Modal>
-        ) : null}
+        ) : null} */}
 
         <IonAlert
           isOpen={stockModal.show}

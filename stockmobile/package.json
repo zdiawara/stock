@@ -22,11 +22,13 @@
     "nedb-promises": "^4.1.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-md": "^5.1.3",
     "react-redux": "^7.2.2",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "reselect": "^4.0.0",
+    "sass": "^1.51.0",
     "typescript": "3.8.3"
   },
   "scripts": {

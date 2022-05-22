@@ -1,8 +1,10 @@
+import { TypeMouvement } from "./enums";
 import { Product, ProductModel } from "./models";
 
 export type FieldProps = {
   label: string;
   color?: string;
+  position?: any;
 };
 
 export interface ProductState extends Product {
@@ -28,3 +30,9 @@ export interface ISellItem {
   _id: string;
   total: number;
 }
+
+export type ProductMouvement = {
+  product: Product;
+  quantite: number;
+  typeMouvement: TypeMouvement;
+};

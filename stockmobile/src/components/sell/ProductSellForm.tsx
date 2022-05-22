@@ -127,7 +127,7 @@ const ProductSellForm: React.FC<ProductSellFormProps> = ({
             disabled={!productSell.product}
           />
         </TextField>
-        <TextField label="Prix total (frs)">
+        <TextField label="Prix total">
           <IonInput
             placeholder=""
             name="total"

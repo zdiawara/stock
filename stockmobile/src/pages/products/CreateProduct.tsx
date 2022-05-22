@@ -9,7 +9,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { closeSharp } from "ionicons/icons";
+import { barcodeOutline, checkmark, closeSharp } from "ionicons/icons";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { TextField } from "../../components/form";
@@ -18,18 +18,21 @@ import { addProduct, setProduct } from "../../redux/reducers/products";
 import { Product } from "../../types";
 import { defaultImage } from "../../utils/images";
 
-import "./EditProduct.scss";
+import "./CreateProduct.scss";
 
-type EditProductProps = {
+type CreateProductProps = {
   id?: string;
   closeModal: () => void;
 };
 
-const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
+const CreateProduct: React.FC<CreateProductProps> = ({ closeModal, id }) => {
   const [productState, setProductState] = useState<Product>({
     name: "",
     price: 0,
     stock: 0,
+    codeBarre: "",
+    description: "",
+    icon: "",
   });
   // const [current, setCurrent] = useState<ElementState>({});
   // const [toDelete, setToDelete] = useState<number | undefined>();
@@ -70,23 +73,21 @@ const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
   return (
     <>
       <IonHeader translucent>
-        <IonToolbar>
+        <IonToolbar color="primary">
           <IonButtons slot="start">
             <IonButton onClick={closeModal}>
               <IonIcon slot="icon-only" icon={closeSharp} />
             </IonButton>
           </IonButtons>
-          <IonTitle>
-            {productState._id ? "Modification" : "Nouveau produit"}
-          </IonTitle>
+          <IonTitle>Nouveau</IonTitle>
           <IonButtons slot="end">
             <IonButton disabled={!canSaved} onClick={saveProduct}>
-              Enregistrer
+              <IonIcon slot="icon-only" icon={checkmark} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent id="edit-product">
+      <IonContent id="create-product">
         <div className="ion-padding account-image">
           <img src={defaultImage} alt="avatar" />
           <IonButton fill="clear" color="dark" size="small">
@@ -94,20 +95,50 @@ const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
           </IonButton>
         </div>
         <IonList>
-          <TextField error={""} label="Nom">
+          <TextField error={""} color="dark" label="Nom">
             <IonInput
-              placeholder="Donnez un nom à votre produit"
+              placeholder="Nom du produit"
               name="name"
               value={productState.name}
               onIonInput={onChange}
             />
           </TextField>
-          <TextField error={""} label="Prix">
+          <TextField error={""} color="dark" label="Code barre">
             <IonInput
-              placeholder="Prix de vente unitaire"
+              placeholder="Code barre du produit"
+              name="codebarres"
+              type="number"
+              // value={productState.price || ""}
+              onIonInput={onChange}
+            />
+            <IonButton>
+              <IonIcon icon={barcodeOutline} /> scanner
+            </IonButton>
+          </TextField>
+          <TextField error={""} color="dark" label="Description">
+            <IonInput
+              placeholder="Détail du produit"
+              name="description"
+              type="text"
+              // value={productState.price || ""}
+              onIonInput={onChange}
+            />
+          </TextField>
+          <TextField color="dark" error={""} label="Prix">
+            <IonInput
+              placeholder="Prix unitaire"
               name="price"
               type="number"
               value={productState.price || ""}
+              onIonInput={onChange}
+            />
+          </TextField>
+          <TextField error={""} color="dark" label="Quantité">
+            <IonInput
+              placeholder="Quantité en stock"
+              name="stock"
+              type="number"
+              // value={productState.price || ""}
               onIonInput={onChange}
             />
           </TextField>
@@ -117,4 +148,4 @@ const EditProduct: React.FC<EditProductProps> = ({ closeModal, id }) => {
   );
 };
 
-export default EditProduct;
+export default CreateProduct;
